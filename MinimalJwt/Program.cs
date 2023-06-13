@@ -15,6 +15,7 @@ var builder = WebApplication.CreateBuilder(args);
 // DEPENDENCIES INJECTION 
 builder.Services.AddSwaggerGen(options =>
 {
+    // CONFIG AUTHENTICATION JWT IN SWAGGER
     options.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
     {
         Scheme = "Bearer" ,
@@ -40,6 +41,7 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
+// INJECTION AND CONFIGURATION OF JWT 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
 {
     options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters()
@@ -53,12 +55,13 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
     };
 });
+
 builder.Services.AddAuthorization();
 
-
+// INJECTIONS OF SERVICES
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSingleton<IMovieService, MovieService>();   
-builder.Services.AddSingleton<IUserService, UserService>(); 
+builder.Services.AddSingleton<IMovieService, MovieService>();
+builder.Services.AddSingleton<IUserService, UserService>();
 
 var app = builder.Build();
 
